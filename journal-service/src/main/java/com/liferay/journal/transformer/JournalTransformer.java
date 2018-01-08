@@ -53,6 +53,7 @@ import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.xml.Attribute;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.DocumentException;
@@ -326,6 +327,8 @@ public class JournalTransformer {
 						TemplateManagerUtil.getTemplateManager(langType);
 
 					HttpServletRequest request = themeDisplay.getRequest();
+
+					prepareTemplate(request, template);
 
 					templateManager.addTaglibSupport(
 						template, request, themeDisplay.getResponse());
@@ -686,6 +689,20 @@ public class JournalTransformer {
 		else {
 			template.processTemplate(unsyncStringWriter);
 		}
+	}
+
+	protected void prepareTemplate(
+			HttpServletRequest request, Template template)
+		throws Exception {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		if (themeDisplay == null) {
+			return;
+		}
+
+		template.prepare(request);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
